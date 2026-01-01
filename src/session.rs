@@ -1,3 +1,4 @@
+#[cfg(feature = "cookie")]
 use crate::cookies::AddCookieParametersWrapper;
 use crate::error::ErrorStatus;
 use crate::wd::{self, WebDriverCompatibleCommand};
@@ -247,13 +248,24 @@ impl WebDriverCompatibleCommand for Wcmd {
                 body = Some("{}".to_string());
                 method = Method::POST;
             }
+            #[cfg(feature = "cookie")]
             WebDriverCommand::AddCookie(ref params) => {
                 let wrapper = AddCookieParametersWrapper { cookie: params };
                 body = Some(serde_json::to_string(&wrapper).unwrap());
                 method = Method::POST;
             }
+            #[cfg(feature = "cookie")]
             WebDriverCommand::DeleteCookie(_) | WebDriverCommand::DeleteCookies => {
                 method = Method::DELETE;
+            }
+            #[cfg(not(feature = "cookie"))]
+            WebDriverCommand::AddCookie(_)
+            | WebDriverCommand::DeleteCookie(_)
+            | WebDriverCommand::DeleteCookies => {
+                panic!(concat!(
+                    env!("CARGO_CRATE_NAME"),
+                    " built without the `cookie` feature"
+                ))
             }
             WebDriverCommand::SetTimeouts(ref params) => {
                 body = Some(serde_json::to_string(params).unwrap());

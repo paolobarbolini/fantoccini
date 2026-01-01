@@ -356,7 +356,7 @@ where
         //
         // Imagine if a cookie is set with path=/download/some_identifier. How do we get that
         // cookie without triggering a request for the (large) file? I don't know. Hence: TODO.
-        //
+        #[cfg(feature = "cookie")]
         let cookies = if let Some(cookie_url) = self.cookie_url {
             let cookie_url = url.join(&cookie_url)?;
             self.client.goto(cookie_url.as_str()).await?;
@@ -418,6 +418,7 @@ where
             .method(self.method)
             .uri(http::Uri::try_from(url.as_str()).unwrap());
 
+        #[cfg(feature = "cookie")]
         if let Some(cookies) = cookies {
             req = req.header(hyper::header::COOKIE, cookies);
         }

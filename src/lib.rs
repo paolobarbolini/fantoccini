@@ -19,6 +19,7 @@
 //!
 //! - `native-tls`: Enable [ergonomic https connection](ClientBuilder::native) using [`native-tls`](https://crates.io/crates/native-tls) (enabled by default).
 //! - `rustls-tls`: Enable [ergonomic https connection](ClientBuilder::rustls) using Rusttls.
+//! - `cookie`: Enable support for cookies.
 //!
 //! # Examples
 //!
@@ -266,6 +267,8 @@ pub mod client;
 pub use client::Client;
 
 pub mod actions;
+#[cfg(feature = "cookie")]
+#[cfg_attr(docsrs, doc(cfg(feature = "cookie")))]
 pub mod cookies;
 pub mod elements;
 pub mod key;
